@@ -97,3 +97,156 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+gymAdminSignIn() async {
+  var email = emailController.text;
+  var pass = passwordController.text;
+
+  ProgressDialog dialog = ProgressDialog(
+    context,
+    title: const Text('Signing up'),
+    message: const Text(
+      'Please wait',
+    ),
+    defaultLoadingWidget: const SpinKitCircle(
+      color: gSecondaryColor,
+      size: 50.0,
+    ),
+  );
+
+  if (email.isEmpty || pass.isEmpty) {
+    Fluttertoast.showToast(
+        msg: 'Please fill all the fields',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black);
+    return;
+  }
+
+  dialog.show();
+
+  try {
+    UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: pass,
+    );
+
+    if (userCredential.user != null) {
+      dialog.dismiss();
+      Fluttertoast.showToast(
+        msg: 'Login Successfully',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black,
+      );
+      Get.offAll(() => const AdminDashboard());
+    }
+  } on FirebaseAuthException catch (e) {
+    dialog.dismiss();
+    if (e.code == 'user-not-found') {
+      Fluttertoast.showToast(msg: 'User not found');
+    } else if (e.code == 'wrong-password') {
+      Fluttertoast.showToast(msg: 'Wrong Password');
+    }
+  }
+}
+gymAdminSignUp() async {
+  var name = nameController.text;
+  var phone = phoneController.text;
+  var email = emailController.text;
+  var pass = passwordController.text;
+  var age = ageController.text;
+  var occupation = selectOccupation.toString();
+  var gender = selectGender.toString();
+  var confirmPass = confirmPassController.text;
+
+  if (name.isEmpty ||
+      phone.isEmpty ||
+      email.isEmpty ||
+      age.isEmpty ||
+      occupation.isEmpty ||
+      gender.isEmpty ||
+      pass.isEmpty ||
+      confirmPass.isEmpty) {
+    Fluttertoast.showToast(
+        msg: 'Please fill all the fields',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black);
+    return;
+  }
+
+  if (pass != confirmPass) {
+    Fluttertoast.showToast(
+      msg: 'Password do not match',
+      backgroundColor: gPrimaryColor,
+      textColor: Colors.black,
+    );
+    return;
+  }
+
+  ProgressDialog dialog = ProgressDialog(
+    context,
+    title: const Text('Signing up'),
+    message: const Text(
+      'Please wait',
+    ),
+    defaultLoadingWidget: const SpinKitRipple(
+      color: gSecondaryColor,
+      size: 50.0,
+    ),
+  );
+
+  dialog.show();
+
+  try {
+    UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+        email: email, password: pass);
+    User? user = userCredential.user;
+    firestore.collection('users').doc(user?.uid).set({
+      'uid': user?.uid,
+      "email": email,
+      "name": name,
+      "age": age,
+      "occupation": occupation,
+      "gender": gender,
+      "phone": phone,
+      "type": 'user',
+    });
+    if (userCredential.user != null) {
+      Fluttertoast.showToast(
+          msg: 'Success',
+          backgroundColor: gPrimaryColor,
+          textColor: Colors.black);
+      Get.to(() => const SigninScreenAdmin());
+      dialog.dismiss();
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black,
+      );
+    }
+    Get.offAll(() => const SigninScreenAdmin());
+    dialog.dismiss();
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'email-already-in-use') {
+      Fluttertoast.showToast(
+        msg: 'Email already use',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black,
+      );
+      dialog.dismiss();
+    } else if (e.code == 'weak-password') {
+      Fluttertoast.showToast(
+        msg: 'Password id weak',
+        backgroundColor: gPrimaryColor,
+        textColor: Colors.black,
+      );
+      dialog.dismiss();
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print(e);
+    }
+    dialog.dismiss();
+  }
+  // Get.to(() => const SigninScreenAdmin());
+  dialog.dismiss();
+}
