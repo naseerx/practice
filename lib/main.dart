@@ -86,6 +86,27 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+        TextField(
+          controller: controller,
+          obscureText: obSecure,
+          decoration: InputDecoration(
+            prefixIcon: Icon(iconData,color: gSecondaryColor,),
+            hintText: hint,
+            fillColor: fillColor,
+
+            filled: true,
+            suffixIcon: suffix,
+            border: InputBorder.none,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: borderColor),
+            ),
+          ),
+        );
           ],
         ),
       ),
