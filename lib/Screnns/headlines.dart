@@ -4,33 +4,35 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:practice/Screnns/headlines.dart';
-import 'package:practice/api_key.dart';
 
-import '../Modals/news_source.dart';
+import '../Modals/headlines_model.dart';
+import '../api_key.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HeadlinesScreen extends StatefulWidget {
+  final String tag;
+  const HeadlinesScreen({Key? key, required this.tag}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HeadlinesScreen> createState() => _HeadlinesScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HeadlinesScreenState extends State<HeadlinesScreen> {
   late StreamController _streamController;
   late Stream stream;
   String token = apiKey;
 
   getProfileApi() async {
+    String tag = widget.tag;
     try {
       _streamController.add('loading');
       String url =
-          'https://api.newscatcherapi.com/v2/sources?lang=en,ur&countries=PK';
+          'https://api.newscatcherapi.com/v2/latest_headlines?countries=PK&sources=$tag';
       var response =
           await http.get(Uri.parse(url), headers: {'X-API-KEY': token});
       if (response.statusCode == 200) {
         var dataJson = json.decode(response.body);
-        NewsSourceModel getProfileModel = NewsSourceModel.fromJson(dataJson);
+        NewsHeadlinesModel getProfileModel =
+            NewsHeadlinesModel.fromJson(dataJson);
         _streamController.add(getProfileModel);
       } else {
         _streamController.add('No data');
@@ -70,22 +72,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: CircularProgressIndicator(),
               );
             } else {
-              NewsSourceModel model = snapshot.data as NewsSourceModel;
+              NewsHeadlinesModel model = snapshot.data as NewsHeadlinesModel;
               return ListView.builder(
-                  itemCount: model.sources.length,
+                  itemCount: model.articles.length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
+                    var data = model.articles[index];
                     return ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HeadlinesScreen(
-                                      tag: model.sources[index],
-                                    )));
-                      },
-                      leading: Text('${index + 1}'),
-                      title: Text(model.sources[index]),
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          data.media
+                        ),
+                      ),
+                      title: Text(data.title),
+                      subtitle: Text(data.summary),
                     );
                   });
             }
