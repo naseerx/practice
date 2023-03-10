@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practice/Screnns/tabbar.dart';
 
 import 'Screnns/webview_practice.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const WebViewPractice(),
+      home: const TabbarPractice(),
       debugShowCheckedModeBanner: false,
     );
   }
