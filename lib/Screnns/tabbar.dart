@@ -10,22 +10,25 @@ class TabbarPractice extends StatefulWidget {
 
 class _TabbarPracticeState extends State<TabbarPractice> {
   TextEditingController searchController = TextEditingController();
+  int selectIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Column(
+    return SafeArea(
+      child: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(
+                height: 40,
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                 child: Text(
                   'Rentals',
-                  style: TextStyle(fontSize: 40),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
               ),
               Padding(
@@ -53,9 +56,10 @@ class _TabbarPracticeState extends State<TabbarPractice> {
                   ),
                 ),
               ),
-              const SizedBox(height: 15,),
-              SizedBox(
-                height: 780,
+              const SizedBox(
+                height: 15,
+              ),
+              Expanded(
                 child: Column(
                   children: [
                     Container(
@@ -70,65 +74,84 @@ class _TabbarPracticeState extends State<TabbarPractice> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 2, vertical: 6),
                         child: TabBar(
+                          onTap: (index) {
+                            setState(() {
+                              selectIndex = index;
+                            });
+                          },
                           labelPadding:
                               const EdgeInsets.symmetric(horizontal: 05),
                           indicatorColor: const Color(0xffE3E3E3),
                           tabs: [
-                            Container(
-                              width: 130,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                // color: const Color(0xffe9e9e9)),
-                                color: Colors.white,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'UpComing ()',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 15),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 130,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                // color: const Color(0xffe9e9e9)),
-                                color: Colors.white,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'InProgress ()',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 15),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: 130,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                // color: const Color(0xffe9e9e9)),
-                                color: Colors.white,
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'Ended',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                ),
-                              ),
-                            ),
+                            selectIndex != 0
+                                ? const Text(
+                                    'UpComing (0)',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  )
+                                : Container(
+                                    width: 130,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      // color: const Color(0xffe9e9e9)),
+                                      color: Colors.white,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'UpComing (0)',
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                            selectIndex != 1
+                                ? const Text(
+                                    'InProgress (0)',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  )
+                                : Container(
+                                    width: 130,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      // color: const Color(0xffe9e9e9)),
+                                      color: Colors.white,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'InProgress (0)',
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                            selectIndex != 2
+                                ? const Text(
+                                    'Ended',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 15),
+                                  )
+                                : Container(
+                                    width: 130,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      // color: const Color(0xffe9e9e9)),
+                                      color: Colors.white,
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'Ended',
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 18),
+                                      ),
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 40,
-                    ),
                     const Expanded(
                       child: TabBarView(
-                        physics: NeverScrollableScrollPhysics(),
                         children: [
                           TabbarOne(),
                           TabbarOne(),
