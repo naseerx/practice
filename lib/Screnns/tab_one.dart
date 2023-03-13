@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import '../Modals/tabbar_model.dart';
 
 class TabbarOne extends StatefulWidget {
-  const TabbarOne({Key? key}) : super(key: key);
+  final String searchQuery;
+
+  const TabbarOne({Key? key, required this.searchQuery}) : super(key: key);
 
   @override
   State<TabbarOne> createState() => _TabbarOneState();
@@ -14,7 +16,6 @@ class TabbarOne extends StatefulWidget {
 class _TabbarOneState extends State<TabbarOne> {
   Future<List<TabbarModel>> getAllData(BuildContext context) async {
     var myData = <TabbarModel>[];
-
     var assetBundle = DefaultAssetBundle.of(context);
     var data = await assetBundle.loadString('assets/data.json');
     var jsonData = json.decode(data);
@@ -23,6 +24,14 @@ class _TabbarOneState extends State<TabbarOne> {
     for (var jsonMatch in jsonSchedule) {
       TabbarModel match = TabbarModel.fromJSON(jsonMatch);
       myData.add(match);
+      if (widget.searchQuery.isNotEmpty) {
+        setState(() {
+          myData = myData
+              .where((item) =>
+                  item.name.toLowerCase().contains(widget.searchQuery))
+              .toList();
+        });
+      }
     }
 
     return myData;

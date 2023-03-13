@@ -11,6 +11,13 @@ class TabbarPractice extends StatefulWidget {
 class _TabbarPracticeState extends State<TabbarPractice> {
   TextEditingController searchController = TextEditingController();
   int selectIndex = 0;
+  String searchQuery = '';
+
+  void updateSearchQuery(String query) {
+    setState(() {
+      searchQuery = query;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +60,7 @@ class _TabbarPracticeState extends State<TabbarPractice> {
                         borderSide: const BorderSide(color: Color(0xffE3E3E3)),
                       ),
                     ),
+                    onChanged: updateSearchQuery,
                   ),
                 ),
               ),
@@ -150,12 +158,18 @@ class _TabbarPracticeState extends State<TabbarPractice> {
                         ),
                       ),
                     ),
-                    const Expanded(
+                    Expanded(
                       child: TabBarView(
                         children: [
-                          TabbarOne(),
-                          TabbarOne(),
-                          TabbarOne(),
+                          TabbarOne(
+                            searchQuery: searchQuery,
+                          ),
+                          TabbarOne(
+                            searchQuery: searchQuery,
+                          ),
+                          TabbarOne(
+                            searchQuery: searchQuery,
+                          ),
                         ],
                       ),
                     )
