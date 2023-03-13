@@ -160,6 +160,7 @@ class _TabbarPracticeState extends State<TabbarPractice> {
                     ),
                     Expanded(
                       child: TabBarView(
+                        physics: const NeverScrollableScrollPhysics(),
                         children: [
                           TabbarOne(
                             searchQuery: searchQuery,
