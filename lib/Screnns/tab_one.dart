@@ -14,15 +14,15 @@ class TabbarOne extends StatefulWidget {
 }
 
 class _TabbarOneState extends State<TabbarOne> {
-  Future<List<TabbarModel>> getAllData(BuildContext context) async {
-    var myData = <TabbarModel>[];
+  Future<List<RentalsModel>> getAllData(BuildContext context) async {
+    var myData = <RentalsModel>[];
     var assetBundle = DefaultAssetBundle.of(context);
     var data = await assetBundle.loadString('assets/data.json');
     var jsonData = json.decode(data);
     var jsonSchedule = jsonData['data'];
 
     for (var jsonMatch in jsonSchedule) {
-      TabbarModel match = TabbarModel.fromJSON(jsonMatch);
+      RentalsModel match = RentalsModel.fromJSON(jsonMatch);
       myData.add(match);
       if (widget.searchQuery.isNotEmpty) {
         setState(() {
@@ -40,11 +40,11 @@ class _TabbarOneState extends State<TabbarOne> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<TabbarModel>>(
+      body: FutureBuilder<List<RentalsModel>>(
         future: getAllData(context),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            List<TabbarModel> data = snapshot.data;
+            List<RentalsModel> data = snapshot.data;
             return ListView.builder(
                 itemCount: data.length,
                 itemBuilder: (context, index) {
